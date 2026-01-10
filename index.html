@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bharathiar University Results</title>
+  <style>
+    body { margin:0; font-family: Arial, Helvetica, sans-serif; background:#fff; color:#000; }
+    .topbar { display:flex; align-items:center; gap:14px; padding:14px 18px; }
+    .logo { width:56px; height:56px; object-fit:contain; }
+    .uni h1 { margin:0; font-size:28px; color:#1a4fa3; font-weight:700; }
+    .uni .sub { margin:2px 0 0; font-size:16px; font-weight:600; }
+
+    .main { display:flex; padding:22px 24px; gap:24px; }
+    .left { width:360px; }
+    .left label { display:block; font-weight:700; margin-bottom:8px; font-size:14px; }
+    .left input { width:220px; height:26px; padding:2px 6px; font-size:14px; }
+    .left button { margin-top:10px; background:#1a4fa3; color:#fff; border:0; padding:6px 10px; font-size:13px; cursor:pointer; border-radius:2px; }
+    .left .caption { margin-top:10px; font-size:13px; }
+
+    .right { flex:1; display:flex; justify-content:center; }
+
+    .result-box { width:520px; border:2px solid #999; background:#fff; }
+    .result-top { display:flex; justify-content:flex-end; padding:3px 4px 0; }
+    .print { background:#c00; color:#fff; border:0; padding:2px 8px; font-size:12px; cursor:pointer; }
+    .result-title { text-align:center; font-weight:700; padding:4px 6px; border-top:1px solid #999; border-bottom:1px solid #999; font-size:13px; }
+    .meta { padding:6px 8px; font-size:13px; }
+    .meta div { padding:2px 0; }
+    table { width:100%; border-collapse:collapse; font-size:13px; }
+    th, td { border:1px solid #999; padding:4px 6px; }
+    th { background:#efefef; text-align:left; }
+    td:nth-child(1), td:nth-child(3), td:nth-child(4) { text-align:center; white-space:nowrap; }
+
+    .disc { padding:8px; font-size:12px; border-top:1px solid #999; }
+    .last { padding:6px 8px; font-size:12px; font-weight:700; border-top:1px solid #999; }
+
+    .hidden { display:none; }
+    .no-record { padding:10px; border:1px solid #ccc; width:520px; font-size:13px; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <img class="logo" src="./logo.jpg" alt="Logo"
+         onerror="this.style.display='none';" />
+    <div class="uni">
+      <h1>Bharathiar University</h1>
+      <div class="sub">Coimbatore. India.</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="left">
+      <label>Type your Register Number and<br/>Click 'Results'.</label>
+      <input id="regNo" type="text"  />
+      <br/>
+      <button id="btn" type="button">▶ Result</button>
+
+      <div class="caption">
+        Bharathiar University - Affiliated<br/>
+        Colleges DEC'2025 Examinations -<br/>
+        UG/PG Results
+      </div>
+    </div>
+
+    <div class="right">
+      <div id="resultContainer" class="hidden"></div>
+    </div>
+  </div>
+
+  <script>
+    const data = {
+      "2326K0049": {
+        name: "SHRIHARI M",
+        subjects: [
+          { code: "51R", subject: "RELATIONAL DATABASE MANAGEMENT SYSTEM", marks: "018+027", result: "F." },
+          { code: "52P", subject: "PYTHON PROGRAMMING", marks: "030+045", result: "P." },
+          { code: "53V", subject: "VISUAL BASIC", marks: "025+040", result: "P." },
+          { code: "54N", subject: "NETWORK SECURITY MANAGEMENT", marks: "027+035", result: "P." },
+          { code: "55L", subject: "RDBMS & VB LAB", marks: "019+035", result: "P." },
+          { code: "4NM", subject: "NAAN MUDHALVAN", marks: "024+024", result: "P." }
+        ]
+      }
+    };
+
+    function esc(v) {
+      return String(v)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function buildResultHTML(regNoRaw) {
+      const regNo = regNoRaw.trim().toUpperCase();
+      const rec = data[regNo];
+
+      if (!rec) {
+        return `<div class="no-record"><strong>Too many users at the time.Come again Later</strong></div>`;
+      }
+
+      const rows = rec.subjects.map(s => `
+        <tr>
+          <td>${esc(s.code)}</td>
+          <td>${esc(s.subject)}</td>
+          <td>${esc(s.marks)}</td>
+          <td>${esc(s.result)}</td>
+        </tr>
+      `).join("");
+
+      return `
+        <div class="result-box">
+          <div class="result-top">
+            <button class="print" type="button" onclick="window.print()">Print</button>
+          </div>
+
+          <div class="result-title">
+            Bharathiar University - Affiliated Colleges - DECEMBER 2025 Examinations -<br/>
+            UG/PG Results
+          </div>
+
+          <div class="meta">
+            <div><strong>Register Number :</strong> ${esc(regNo)}</div>
+            <div><strong>Name :</strong> ${esc(rec.name)}</div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th style="width:80px;">SUB CODE</th>
+                <th>SUBJECT NAME</th>
+                <th style="width:90px;">MARKS</th>
+                <th style="width:70px;">RESULT</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows}
+            </tbody>
+          </table>
+
+          <div class="disc">
+            <strong>Disclaimer:</strong> The University is not responsible for any inadvertent error that may have crept in the
+            results being published on Net. The results published on Net are for immediate information to the examinees.
+            These cannot be treated as original Mark Sheets. Original Mark Sheets will be issued by the University separately.
+          </div>
+
+          <div class="last">Last date for submission of revaluation application: 02.02.2026</div>
+        </div>
+      `;
+    }
+
+    function showResult() {
+      const regNo = document.getElementById("regNo").value;
+      const el = document.getElementById("resultContainer");
+
+      const normalized = regNo.trim().toUpperCase();
+      if (!normalized) return;
+
+      el.innerHTML = buildResultHTML(regNo);
+      el.classList.remove("hidden");
+    }
+
+    document.getElementById("btn").addEventListener("click", showResult);
+    document.getElementById("regNo").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") showResult();
+    });
+  </script>
+</body>
+</html>
